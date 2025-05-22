@@ -5,13 +5,14 @@ clear
 i=1;
 check = false;
 while ~check
-    [filename] = uigetfile;
+    [filename,folderpath] = uigetfile;
     if isequal(filename, 0)
 
         fprintf('The user selected all the data \n');
         check = true;
     else
-        load(filename)
+        filepath = fullfile(folderpath, filename);
+        load(filepath)
         
         
         %EXTRACTING FREQUENCIES
@@ -62,13 +63,53 @@ while ~check
 
         %Plotting boxplot
         boxplot(YM,frequencies_number)
+        xlabel('Frequencies (Hz)')
+        ylabel('YM')
         hold on 
+
+        %Getting plot title
+        if i == 1
+            separated_filepath = strsplit(filepath,'\');
+            [indx] = listdlg('ListString',separated_filepath);
+            temp_string = string(separated_filepath{1,indx});
+            separated2_filepath = strsplit(temp_string,'_');
+            [indx] = listdlg('ListString',separated2_filepath);
+            if indx == 1
+                temp_title = separated2_filepath(indx);
+                title(temp_title)
+            else
+                temp_title = separated2_filepath(1,indx(1));
+                for j=2:size(indx,2)
+                    temp_title = temp_title + ' ' + separated2_filepath(1,indx(j));
+                    title(temp_title)
+                end
+            end
+        else
+            temp_title = temp_title + ' vs';
+            separated_filepath = strsplit(filepath,'\');
+            [indx] = listdlg('ListString',separated_filepath);
+            temp_string = string(separated_filepath{1,indx});
+            separated2_filepath = strsplit(temp_string,'_');
+            [indx] = listdlg('ListString',separated2_filepath);
+            if indx == 1
+                temp_title = temp_title + ' ' + separated2_filepath(indx);
+                title(temp_title)
+            else
+                temp_title = temp_title + ' ' + separated2_filepath(1,indx(1));
+                for j=2:size(indx,2)
+                    temp_title = temp_title + ' ' + separated2_filepath(1,indx(j));
+                    title(temp_title)
+                end
+            end            
+        end
+        clear separated_filepat, clear separated2_filepath
+        clear temp_string
         
         
         %To get boxes filled with colors
         %CLOSE PREVIOUS PLOTS TO MAKE THIS COMMAND WORKS
-        new_boxes = setdiff(findobj(gca,'Tag','Box'),prev_boxes);
         c = uisetcolor;
+        new_boxes = setdiff(findobj(gca,'Tag','Box'),prev_boxes);
         for j = 1:length(new_boxes)
             patch(get(new_boxes(j),'XData'), get(new_boxes(j),'YData'), c, 'FaceAlpha', 0.3);
         end

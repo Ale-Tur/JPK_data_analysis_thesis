@@ -86,7 +86,6 @@ while ~check
         %Plotting the medians and the CI
         f1 = errorbar(frequencies_number(:,1),median_Gprime(i,:),CI_prime(i,:,1),CI_prime(i,:,2),[],[],...
             '-o','Color',c,'MarkerFaceColor',c);
-        xlabel('Frequencies (Hz)')
         hold on
 
         %Plotting the fits
@@ -99,7 +98,7 @@ while ~check
         y_fit_2(:,1) = coeff_Gprime_exp2(1,1)*exp(x_fit*coeff_Gprime_exp2(1,2))...
             +coeff_Gprime_exp2(1,3)*exp(x_fit*coeff_Gprime_exp2(1,4));
         c_2 = uisetcolor('Choose color for exp2 fit');
-        f3 = plot(y_fit_2,'Color', c_2, 'LineWidth',0.7);
+        f3 = plot(y_fit_2,'Color', c_2, 'LineWidth',0.7)
         hold on
 
         %% Plotting G"
@@ -112,24 +111,22 @@ while ~check
         coeff_Gsecond_exp2 = coeffvalues(fit_Gsecond_exp2);
         
         %Plotting the medians and the CI
-        f4 = errorbar(frequencies_number(:,1),median_Gsecond(i,:),CI_second(i,:,1),CI_second(i,:,2),[],[],...
-            '-o','Color',c_3,'MarkerFaceColor',c_3);
+        errorbar(frequencies_number(:,1),median_Gsecond(i,:),CI_second(i,:,1),CI_second(i,:,2),[],[],...
+            '-o','Color',c_3,'MarkerFaceColor',c_3)
         hold on
 
         %Plotting the fits
         c_4 = uisetcolor('Choose color for exp1 fit');
         x_fit = frequencies_number(1,1):1:frequencies_number(size(frequencies_number,1),1);
         y_fit(:,1) = coeff_Gsecond_exp(1,1)*exp(x_fit*coeff_Gsecond_exp(1,2));
-        f5 = plot(y_fit,'Color',c_4, 'LineWidth',0.7);
+        plot(y_fit,'Color',c_4, 'LineWidth',0.7)
         hold on
         y_fit_2(:,1) = coeff_Gsecond_exp2(1,1)*exp(x_fit*coeff_Gsecond_exp2(1,2))...
             +coeff_Gsecond_exp2(1,3)*exp(x_fit*coeff_Gsecond_exp2(1,4));
         c_5 = uisetcolor('Choose color for exp2 fit');
-        f6 = plot(y_fit_2,'Color', c_5, 'LineWidth',0.7);
+        plot(y_fit_2,'Color', c_5, 'LineWidth',0.7)
         hold on        
 
-        legend([f1 f2 f3 f4 f5 f6], "G'", "G' exp1 fit", "G' exp2 fit",...
-            'G"', 'G" exp1 fit', 'G" exp2 fit');
 
         clear Gprime; clear flip_Gprime,
         clear Gsecond; clear flip_Gsecond

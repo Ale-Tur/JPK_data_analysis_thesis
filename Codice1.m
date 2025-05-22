@@ -57,7 +57,7 @@ else
         data_name = data_name + "_" + temp_string ;
     end
     fprintf('Is the frequencies sweep in log or linear steps? \n')
-    log_lin = ["log", "lin"];
+    log_lin = ["log", "lin", "reverse"];
     [indx, check_list]  =listdlg('ListString',log_lin);
     data_name = data_name + "_" +log_lin(1,indx) + '.mat';
 end
