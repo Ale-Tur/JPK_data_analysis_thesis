@@ -62,9 +62,9 @@ while ~check
         prev_boxes = findobj(gca,'Tag','Box');
 
         %Plotting boxplot
-        boxplot(YM,frequencies_number)
-        xlabel('Frequencies (Hz)')
-        ylabel('YM')
+        boxplot(YM,frequencies_number,'p')
+        xlabel('Frequencies [Hz]')
+        ylabel('YM [Pa]')
         hold on 
 
         %Getting plot title

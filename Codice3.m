@@ -2,6 +2,7 @@ clc
 clear
 
 i = 1;
+legend_inx = 1;
 check = false;
 while ~check
 
@@ -80,24 +81,25 @@ while ~check
         %Fitting both single and double exp
         fit_Gprime_exp = fit(frequencies_number(:,1),(median_Gprime(i,:)).','exp1');
         fit_Gprime_exp2 = fit(frequencies_number(:,1),(median_Gprime(i,:)).','exp2');
-        coeff_Gprime_exp = coeffvalues(fit_Gprime_exp);
-        coeff_Gprime_exp2 = coeffvalues(fit_Gprime_exp2);
+        coeff_Gprime_exp(i,:) = coeffvalues(fit_Gprime_exp);
+        coeff_Gprime_exp2(i,:) = coeffvalues(fit_Gprime_exp2);
         
         %Plotting the medians and the CI
         f1 = errorbar(frequencies_number(:,1),median_Gprime(i,:),CI_prime(i,:,1),CI_prime(i,:,2),[],[],...
-            '-o','Color',c,'MarkerFaceColor',c);
-        xlabel('Frequencies (Hz)')
+            'o','Color',c,'MarkerFaceColor',c);
+        xlabel('Frequencies [Hz]')
+        ylabel('G* [Pa]')
         hold on
 
         %Plotting the fits
         c_1 = uisetcolor('Choose color for exp1 fit');
         x_fit = frequencies_number(1,1):1:frequencies_number(size(frequencies_number,1),1);
-        y_fit(:,1) = coeff_Gprime_exp(1,1)*exp(x_fit*coeff_Gprime_exp(1,2));
+        y_fit(:,1) = coeff_Gprime_exp(i,1)*exp(x_fit*coeff_Gprime_exp(i,2));
         f2 = plot(y_fit,'Color',c_1, 'LineWidth',0.7);
         legend({'G exp1 fit'})
         hold on
-        y_fit_2(:,1) = coeff_Gprime_exp2(1,1)*exp(x_fit*coeff_Gprime_exp2(1,2))...
-            +coeff_Gprime_exp2(1,3)*exp(x_fit*coeff_Gprime_exp2(1,4));
+        y_fit_2(:,1) = coeff_Gprime_exp2(i,1)*exp(x_fit*coeff_Gprime_exp2(i,2))...
+            +coeff_Gprime_exp2(i,3)*exp(x_fit*coeff_Gprime_exp2(i,4));
         c_2 = uisetcolor('Choose color for exp2 fit');
         f3 = plot(y_fit_2,'Color', c_2, 'LineWidth',0.7);
         hold on
@@ -108,31 +110,76 @@ while ~check
         %Fitting both single and double exp
         fit_Gsecond_exp = fit(frequencies_number(:,1),(median_Gsecond(i,:)).','exp1');
         fit_Gsecond_exp2 = fit(frequencies_number(:,1),(median_Gsecond(i,:)).','exp2');
-        coeff_Gsecond_exp = coeffvalues(fit_Gsecond_exp);
-        coeff_Gsecond_exp2 = coeffvalues(fit_Gsecond_exp2);
+        coeff_Gsecond_exp(i,:) = coeffvalues(fit_Gsecond_exp);
+        coeff_Gsecond_exp2(i,:) = coeffvalues(fit_Gsecond_exp2);
         
         %Plotting the medians and the CI
         f4 = errorbar(frequencies_number(:,1),median_Gsecond(i,:),CI_second(i,:,1),CI_second(i,:,2),[],[],...
-            '-o','Color',c_3,'MarkerFaceColor',c_3);
+            'o','Color',c_3,'MarkerFaceColor',c_3);
         hold on
 
         %Plotting the fits
         c_4 = uisetcolor('Choose color for exp1 fit');
         x_fit = frequencies_number(1,1):1:frequencies_number(size(frequencies_number,1),1);
-        y_fit(:,1) = coeff_Gsecond_exp(1,1)*exp(x_fit*coeff_Gsecond_exp(1,2));
-        f5 = plot(y_fit,'Color',c_4, 'LineWidth',0.7);
+        y_fit(:,1) = coeff_Gsecond_exp(i,1)*exp(x_fit*coeff_Gsecond_exp(i,2));
+        f5 = plot(y_fit,'--','Color',c_4, 'LineWidth',0.7);
         hold on
-        y_fit_2(:,1) = coeff_Gsecond_exp2(1,1)*exp(x_fit*coeff_Gsecond_exp2(1,2))...
-            +coeff_Gsecond_exp2(1,3)*exp(x_fit*coeff_Gsecond_exp2(1,4));
+        y_fit_2(:,1) = coeff_Gsecond_exp2(i,1)*exp(x_fit*coeff_Gsecond_exp2(i,2))...
+            +coeff_Gsecond_exp2(i,3)*exp(x_fit*coeff_Gsecond_exp2(i,4));
         c_5 = uisetcolor('Choose color for exp2 fit');
-        f6 = plot(y_fit_2,'Color', c_5, 'LineWidth',0.7);
-        hold on        
+        f6 = plot(y_fit_2,'--','Color', c_5, 'LineWidth',0.7);
+        hold on
 
-        legend([f1 f2 f3 f4 f5 f6], "G'", "G' exp1 fit", "G' exp2 fit",...
-            'G"', 'G" exp1 fit', 'G" exp2 fit');
+        %Getting plot title
+        if i == 1
+            separated_filepath = strsplit(filepath,'\');
+            [indx] = listdlg('ListString',separated_filepath);
+            temp_string = string(separated_filepath{1,indx});
+            separated2_filepath = strsplit(temp_string,'_');
+            [indx] = listdlg('ListString',separated2_filepath);
+            if indx == 1
+                temp_title = separated2_filepath(indx);
+                title(temp_title)
+            else
+                temp_title = separated2_filepath(1,indx(1));
+                for j=2:size(indx,2)
+                    temp_title = temp_title + ' ' + separated2_filepath(1,indx(j));
+                    title(temp_title)
+                end
+            end
+        else
+            temp_title = temp_title + ' vs';
+            separated_filepath = strsplit(filepath,'\');
+            [indx] = listdlg('ListString',separated_filepath);
+            temp_string = string(separated_filepath{1,indx});
+            separated2_filepath = strsplit(temp_string,'_');
+            [indx] = listdlg('ListString',separated2_filepath);
+            if indx == 1
+                temp_title = temp_title + ' ' + separated2_filepath(indx);
+                title(temp_title)
+            else
+                temp_title = temp_title + ' ' + separated2_filepath(1,indx(1));
+                for j=2:size(indx,2)
+                    temp_title = temp_title + ' ' + separated2_filepath(1,indx(j));
+                    title(temp_title)
+                end
+            end            
+        end
+        
+        %Getting legend
+        legend_promp = ["G'", "G' exp1 fit", "G' exp2 fit",...
+            'G"', 'G" exp1 fit', 'G" exp2 fit'];
+        for j=0:(size(legend_promp,2)-1)
+            fprintf('%d %d \n', j, j+legend_inx);
+            legend_array(1,(j+legend_inx)) = legend_promp(1,j+1) + " " + separated2_filepath(1,indx(2));
+        end 
+        legend_inx = size(legend_array,2) + 1;
+        clear separated_filepat, clear separated2_filepath
+        clear temp_string
 
         clear Gprime; clear flip_Gprime,
         clear Gsecond; clear flip_Gsecond
     end
-
+i = i+1;
 end
+legend(legend_array);
