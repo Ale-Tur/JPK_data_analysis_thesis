@@ -61,8 +61,12 @@ while ~check
         %Searching for previous boxes
         prev_boxes = findobj(gca,'Tag','Box');
 
+        %Getting offset for future boxes
+        size_frequencies = numel(frequencies_number);
+        offset_boxes = linspace(-0.3,0.3,4);
+
         %Plotting boxplot
-        boxplot(YM,frequencies_number,'p')
+        boxplot(YM,frequencies_number);
         xlabel('Frequencies [Hz]')
         ylabel('YM [Pa]')
         hold on 
@@ -79,6 +83,7 @@ while ~check
                 title(temp_title)
             else
                 temp_title = separated2_filepath(1,indx(1));
+                legend_array(i,1) = separated2_filepath(1,indx(1,2)); 
                 for j=2:size(indx,2)
                     temp_title = temp_title + ' ' + separated2_filepath(1,indx(j));
                     title(temp_title)
@@ -96,13 +101,14 @@ while ~check
                 title(temp_title)
             else
                 temp_title = temp_title + ' ' + separated2_filepath(1,indx(1));
+                legend_array(i,1) = separated2_filepath(1,indx(1,2)); 
                 for j=2:size(indx,2)
                     temp_title = temp_title + ' ' + separated2_filepath(1,indx(j));
                     title(temp_title)
                 end
-            end            
+            end
         end
-        clear separated_filepat, clear separated2_filepath
+        clear separated_filepath, clear separated2_filepath
         clear temp_string
         
         
@@ -121,7 +127,7 @@ while ~check
         x_scatter(:,:) = x_scatter(:,:) + 0.2*(rand(size(x_scatter)) - 0.5);
         
         scatter(x_scatter(:,:),YM(:,:),26,c,'filled',...
-            'MarkerFaceAlpha',0.7)
+            'MarkerFaceAlpha',0.7,'HandleVisibility','off')
         hold on
         % %Plotting line between each data of each sample
         % for i = 1:size(x_scatter,1)
@@ -131,4 +137,5 @@ while ~check
         clear YM; clear flip_YM
         i = i+1;
     end
+    legend(legend_array)
 end

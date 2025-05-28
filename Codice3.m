@@ -52,6 +52,7 @@ while ~check
         %maybe?)
         for j = 1:size(Gprime,2)
             median_Gprime(i,j) = nanmedian(Gprime(:,j));
+            fprintf('%d \n', j)
         end
 
         %Getting the median for G" (separeted for future errors check
@@ -79,10 +80,12 @@ while ~check
         c = uisetcolor;
 
         %Fitting both single and double exp
-        fit_Gprime_exp = fit(frequencies_number(:,1),(median_Gprime(i,:)).','exp1');
-        fit_Gprime_exp2 = fit(frequencies_number(:,1),(median_Gprime(i,:)).','exp2');
-        coeff_Gprime_exp(i,:) = coeffvalues(fit_Gprime_exp);
-        coeff_Gprime_exp2(i,:) = coeffvalues(fit_Gprime_exp2);
+        fit_Gprime_power1 = fit(frequencies_number(:,1),(median_Gprime(i,:)).','power1');
+        fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [1, 1, 1, 1]);
+        ft = fittype('a*x^b + c*x^d','independent', 'x', 'coefficients', {'a','b','c','d'},'options',fo);
+        fit_Gprime_power2 = fit(frequencies_number(:,1),(median_Gprime(i,:)).',ft);
+        coeff_Gprime_power1(i,:) = coeffvalues(fit_Gprime_power1);
+        coeff_Gprime_power2(i,:) = coeffvalues(fit_Gprime_power2);
         
         %Plotting the medians and the CI
         f1 = errorbar(frequencies_number(:,1),median_Gprime(i,:),CI_prime(i,:,1),CI_prime(i,:,2),[],[],...
@@ -94,24 +97,24 @@ while ~check
         %Plotting the fits
         c_1 = uisetcolor('Choose color for exp1 fit');
         x_fit = frequencies_number(1,1):1:frequencies_number(size(frequencies_number,1),1);
-        y_fit(:,1) = coeff_Gprime_exp(i,1)*exp(x_fit*coeff_Gprime_exp(i,2));
-        f2 = plot(y_fit,'Color',c_1, 'LineWidth',0.7);
+        y_fit(:,1) = coeff_Gprime_power1(i,1)*x_fit.^(coeff_Gprime_power1(i,2));
+        f2 = plot(y_fit,'Color',c_1, 'LineWidth',0.7,'HandleVisibility','off');
         legend({'G exp1 fit'})
         hold on
-        y_fit_2(:,1) = coeff_Gprime_exp2(i,1)*exp(x_fit*coeff_Gprime_exp2(i,2))...
-            +coeff_Gprime_exp2(i,3)*exp(x_fit*coeff_Gprime_exp2(i,4));
+        y_fit_2(:,1) = coeff_Gprime_power2(i,1)*x_fit.^(coeff_Gprime_power2(i,2))...
+            +coeff_Gprime_power2(i,3)*x_fit.^(coeff_Gprime_power2(i,4));
         c_2 = uisetcolor('Choose color for exp2 fit');
-        f3 = plot(y_fit_2,'Color', c_2, 'LineWidth',0.7);
+        f3 = plot(y_fit_2,'--', 'Color', c_2, 'LineWidth',0.7,'HandleVisibility','off');
         hold on
 
         %% Plotting G"
         c_3 = uisetcolor;
 
         %Fitting both single and double exp
-        fit_Gsecond_exp = fit(frequencies_number(:,1),(median_Gsecond(i,:)).','exp1');
-        fit_Gsecond_exp2 = fit(frequencies_number(:,1),(median_Gsecond(i,:)).','exp2');
-        coeff_Gsecond_exp(i,:) = coeffvalues(fit_Gsecond_exp);
-        coeff_Gsecond_exp2(i,:) = coeffvalues(fit_Gsecond_exp2);
+        fit_Gsecond_power1 = fit(frequencies_number(:,1),(median_Gsecond(i,:)).','power1');
+        fit_Gsecond_power2 = fit(frequencies_number(:,1),(median_Gsecond(i,:)).',ft);
+        coeff_Gsecond_power1(i,:) = coeffvalues(fit_Gsecond_power1);
+        coeff_Gsecond_power2(i,:) = coeffvalues(fit_Gsecond_power2);
         
         %Plotting the medians and the CI
         f4 = errorbar(frequencies_number(:,1),median_Gsecond(i,:),CI_second(i,:,1),CI_second(i,:,2),[],[],...
@@ -121,13 +124,13 @@ while ~check
         %Plotting the fits
         c_4 = uisetcolor('Choose color for exp1 fit');
         x_fit = frequencies_number(1,1):1:frequencies_number(size(frequencies_number,1),1);
-        y_fit(:,1) = coeff_Gsecond_exp(i,1)*exp(x_fit*coeff_Gsecond_exp(i,2));
-        f5 = plot(y_fit,'--','Color',c_4, 'LineWidth',0.7);
+        y_fit(:,1) = coeff_Gsecond_power1(i,1)*x_fit.^(coeff_Gsecond_power1(i,2));
+        f5 = plot(y_fit,'Color',c_4, 'LineWidth',0.7,'HandleVisibility','off');
         hold on
-        y_fit_2(:,1) = coeff_Gsecond_exp2(i,1)*exp(x_fit*coeff_Gsecond_exp2(i,2))...
-            +coeff_Gsecond_exp2(i,3)*exp(x_fit*coeff_Gsecond_exp2(i,4));
+        y_fit_2(:,1) = coeff_Gsecond_power2(i,1)*x_fit.^(coeff_Gsecond_power2(i,2))...
+            +coeff_Gsecond_power2(i,3)*x_fit.^(coeff_Gsecond_power2(i,4));
         c_5 = uisetcolor('Choose color for exp2 fit');
-        f6 = plot(y_fit_2,'--','Color', c_5, 'LineWidth',0.7);
+        f6 = plot(y_fit_2,'--','Color', c_5, 'LineWidth',0.7,'HandleVisibility','off');
         hold on
 
         %Getting plot title
@@ -167,10 +170,9 @@ while ~check
         end
         
         %Getting legend
-        legend_promp = ["G'", "G' exp1 fit", "G' exp2 fit",...
-            'G"', 'G" exp1 fit', 'G" exp2 fit'];
+        legend_promp = ["G'", 'G"'];
         for j=0:(size(legend_promp,2)-1)
-            fprintf('%d %d \n', j, j+legend_inx);
+            %fprintf('%d %d \n', j, j+legend_inx);
             legend_array(1,(j+legend_inx)) = legend_promp(1,j+1) + " " + separated2_filepath(1,indx(2));
         end 
         legend_inx = size(legend_array,2) + 1;
