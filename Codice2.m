@@ -41,6 +41,13 @@ while ~check
         
         %Getting the right Parameters, in this case the YM
         flip_YM(:,:) = cell2mat(data_organized(2:size(data_organized,1),8,:));
+        for ii = 1:size(flip_YM,1)
+            for jj = 1:size(flip_YM,2)
+                if flip_YM(ii,jj) < 0
+                    flip_YM(ii,jj) = NaN;
+                end
+            end
+        end
         
         %This command is needed to easily obtain YM vs frequencies
         YM = flip_YM.';
@@ -139,3 +146,5 @@ while ~check
     end
     legend(legend_array)
 end
+save('YM_AllMedian','median_YM')
+save('CI_allmedian', 'CI')

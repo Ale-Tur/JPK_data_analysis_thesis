@@ -5,7 +5,7 @@ clear
 %menageable MATLAB cell. This code NEED the functions organize_data and
 %organize_check_data to work. This code NEED to ALWAYS PASS FIRST AN
 %EXPERIMENT WERE ALL THE FREQUENCIES WERE TAKEN. For files with discarded
-%frequencies the code insert a row on NaN. The code let the user choose all
+%frequencies the code insert a row with NaN. The code let the user choose all
 %the wanted files and the name to give (through the filepath of the
 %directory), one also has to choose if the frequency sweep is done through
 %linear or log delta.

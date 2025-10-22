@@ -43,6 +43,16 @@ while ~check
         %Getting the right Parameters, in this case the G' and G''
         flip_Gprime(:,:) = cell2mat(data_organized(2:size(data_organized,1),23,:));
         flip_Gsecond(:,:) = cell2mat(data_organized(2:size(data_organized,1),24,:));
+        for ii = 1:size(flip_Gprime,1)
+            for jj = 1:size(flip_Gprime,2)
+                if flip_Gprime(ii,jj) < 0
+                    flip_Gprime(ii,jj) = NaN;
+                end
+                if flip_Gsecond(ii,jj) < 0
+                    flip_Gsecond(ii,jj) = NaN;
+                end
+            end
+        end
         
         %This command is needed to easily obtain G' and G'' vs frequencies
         Gprime = flip_Gprime.';
@@ -176,7 +186,7 @@ while ~check
             legend_array(1,(j+legend_inx)) = legend_promp(1,j+1) + " " + separated2_filepath(1,indx(2));
         end 
         legend_inx = size(legend_array,2) + 1;
-        clear separated_filepat, clear separated2_filepath
+        clear separated_filepath, clear separated2_filepath
         clear temp_string
 
         clear Gprime; clear flip_Gprime,
