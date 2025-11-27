@@ -91,7 +91,7 @@ while ~check
 
         %Fitting both single and double exp
         fit_Gprime_power1 = fit(frequencies_number(:,1),(median_Gprime(i,:)).','power1');
-        fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [1, 1, 1, 1]);
+        fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [50, 0.5, 0.01, 1.5], 'lower', [0,0,0,0], 'upper', [10000, 5, 10000, 5]);
         ft = fittype('a*x^b + c*x^d','independent', 'x', 'coefficients', {'a','b','c','d'},'options',fo);
         fit_Gprime_power2 = fit(frequencies_number(:,1),(median_Gprime(i,:)).',ft);
         coeff_Gprime_power1(i,:) = coeffvalues(fit_Gprime_power1);

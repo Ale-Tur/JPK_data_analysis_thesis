@@ -82,3 +82,5 @@ while ~check
     end
     clear flip_Loss;
 end
+
+plot(1:1:max(frequencies_number),ones(1,numel(1:1:max(frequencies_number))),'--','Color',[0 0 0], 'HandleVisibility','off')

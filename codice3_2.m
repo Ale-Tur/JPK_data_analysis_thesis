@@ -67,7 +67,7 @@ while ~check
         %DA CORREGGERE (dovrebbe essre corretto)
         elseif choice == 2
 
-            fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [1, 1, 1, 1]);
+            fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [50, 1.5, 200, 0.5], 'lower', [0,0,0,0]);
             ft = fittype('a*x^b + c*x^d','independent', 'x', 'coefficients', {'a','b','c','d'},'options',fo);
             %For fit all of cells
             for jj=1:size(G,1)
@@ -96,8 +96,11 @@ while ~check
 end
 % legend_array = reshape(legend_array, [], 1);
 % legend(legend_array);
-% save("all_coeff_power1","all_coeff")
-% save("all_coeff_median_power1","coeff_power1")
 
-save("all_coeff_power2","all_coeff")
-save("all_coeff_median_power2","coeff_power2")
+if choice == 1
+    save("all_coeff_power1","all_coeff")
+    save("all_coeff_median_power1","coeff_power1")
+elseif choihce == 2
+    save("all_coeff_power2","all_coeff")
+    save("all_coeff_median_power2","coeff_power2")
+end

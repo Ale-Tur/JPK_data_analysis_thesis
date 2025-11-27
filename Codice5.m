@@ -1,21 +1,33 @@
 % clc
 % clear
 
-save('1hz_cell7_06_09',"forcesave1")
+% save('1hz_cell7_06_09',"forcesave1")
 
-force_array = forcesave1.TEXT;
-forcearray_clean = force_array(~isnan(force_array));
+forcesave = forcesave500;
 
-plot(forcearray_clean)
+deflection = forcesave.TEXT;
+tip_position = forcesave.VarName1;
+height = forcesave.EXPORT;
+SmoothMeasured_height = forcesave.VarName4;
+measured_height = forcesave.VarName5;
+time = forcesave.VarName6;
+
+plot(time,tip_position*10^6 + 1.441, 'red') %1.323 %1.466
+hold on
+plot(time,measured_height*10^6 + 1.441, 'blue')
 
 
-% heigth_1hz_25nm = forcesave1_25.VarName1;
-% heigth_1hz_250nm = forcesave1_250.VarName1;
-% 
-% plot(heigth_1hz_250nm(14949:15763)*(10^7), 'Color',[1 0 0])
-% hold on
-% 
-% plot(heigth_1hz_25nm(15422:16326)*(10^7)-6.68977, 'Color',[0 0 1])
+pause
+
+plot(time,deflection*10^9)
+
+pause
+
+yyaxis left
+plot(time,deflection*10^9,'blue')
+hold on
+yyaxis right
+plot(time, tip_position*10^6 + 1.426, 'red')      
 
 
 

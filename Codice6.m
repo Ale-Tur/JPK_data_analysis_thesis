@@ -32,7 +32,7 @@ while ~check
         colors{i} = color_temp(:)';
 
         dataset_ID = [dataset_ID,ExtractNameAmplitude(filename)];
-        dataset_ID = [dataset_ID,"fit"];
+        % dataset_ID = [dataset_ID,"fit"];
 
 
     end
@@ -74,7 +74,7 @@ elseif choice_1 == 2
 
     fprintf('G* will be computed for each data and the obtained G* will be the median \n')
     mod_G = cell(size(G_prime));
-    fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [400, 0.1, 0.5, 0.1]);
+    fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [400, 0.5, 0.5, 0.05]);
     ft = fittype('a*x^b + c*x^d','independent', 'x', 'coefficients', {'a','b','c','d'},'options',fo);
     
     for ii=1:num_dataset
@@ -99,14 +99,16 @@ elseif choice_1 == 2
         errorbar(frequencies_number,median_mod_G(ii,:),CI_mod_G(ii,:,1),CI_mod_G(ii,:,2),...
             'o','Color',colors{ii},'MarkerFaceColor',colors{ii})
         hold on
-        plot(xdata,power2(coeff_power2(ii,:),xdata),'--','Color',colors{ii})
+        plot(xdata,power2(coeff_power2(ii,:),xdata),'--','Color',colors{ii}, 'HandleVisibility','off')
         hold on
     end
-    xlabel('Frequency');
-    ylabel('G* modulus');
+    xlabel('Frequency [Hz]');
+    ylabel('|G*|  [Pa]');
     legend(dataset_ID, 'Location', 'bestoutside');
 
 end
+
+save("Gmod_coeff_power2","coeff_power2")
 
 
 
