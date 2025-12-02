@@ -24,7 +24,7 @@ while ~check
         frequencies_number = ExtractFreq(data_organized);
         flip_YM(:,:) = cell2mat(data_organized(2:dim_DO_1,8,:));
 
-        [YM_temp(:,:), median_YM(i,:), CI_YM] = GetStatistics(flip_YM,i);
+        [YM_temp(:,:), median_YM(i,:), CI_YM] = GetStatistics(flip_YM,i,true);
 
         color_temp = uisetcolor;
 

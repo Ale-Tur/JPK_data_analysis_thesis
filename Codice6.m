@@ -23,8 +23,8 @@ while ~check
         frequencies_number = ExtractFreq(data_organized);
         flip_G_prime(:,:) = cell2mat(data_organized(2:size(data_organized,1),23,:)); %G'
         flip_G_second(:,:) = cell2mat(data_organized(2:size(data_organized,1),24,:)); %G"
-        [temp_prime(:,:), median_prime(i,:), CI_prime] = GetStatistics(flip_G_prime,i);
-        [temp_second(:,:), median_second(i,:), CI_second] = GetStatistics(flip_G_second,i);
+        [temp_prime(:,:), median_prime(i,:), CI_prime] = GetStatistics(flip_G_prime,i,true);
+        [temp_second(:,:), median_second(i,:), CI_second] = GetStatistics(flip_G_second,i,true);
         G_prime{i} = temp_prime;
         G_second{i} = temp_second;
 
@@ -119,10 +119,11 @@ end
 
 function [CI] = ConfidenceInterval(matrix)
     for j = 1:size(matrix,2)
-        n_NaN = numnan(matrix(:,j));
-        standard_error = nanstd(matrix(:,j))/sqrt(size(matrix,2)-n_NaN);
-        t_score = tinv([0.05 0.95], size(matrix,2)-1-n_NaN);
+        col = matrix(:,j);
+        n = sum(~isnan(col)); 
+        standard_error = nanstd(col) / sqrt(n);  
+        t_score = tinv([0.125 0.875], n-1); % 75% CI quantiles
         %CI(j,1) has lower limit, CI(j,2) has the upper limit
-        CI(j,:) = nanmean(matrix(:,j)) + t_score*standard_error;
+        CI(j,:) = nanmean(col) + t_score*standard_error;
     end
 end

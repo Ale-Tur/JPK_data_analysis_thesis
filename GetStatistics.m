@@ -14,26 +14,30 @@ function [vector, median_vector, CI_vector] = GetStatistics(flip_vector,i, condi
 
     for j = 1:size(vector,2)
         median_vector(1,j) = nanmedian(vector(:,j));
-        fprintf('%d \n', j)
+        % fprintf('%d \n', j)
     end
 
     if condition_25 == false 
-        %Getting the confidence interval for G' 
+        %95 CI
         for j = 1:size(vector,2)
-            n_NaN_prime = numnan(vector(:,j));
-            standard_error_prime = nanstd(vector(:,j))/sqrt(size(vector,2)-n_NaN_prime);
-            t_score_prime = tinv([0.025 0.975], size(vector,2)-1-n_NaN_prime);
-            CI_vector(i,j,:) = nanmean(vector(:,j)) + t_score_prime*standard_error_prime; %CI(i,j,1) has lower limit, CI(i,j,2) has the upper limit
+            col = vector(:,j);
+            n = sum(~isnan(col));
+            standard_error = nanstd(col) / sqrt(n);
+            t_score = tinv([0.025 0.975], n-1); % 95% CI quantiles
+    
+            CI_vector(i,j,1) = nanmean(col) + t_score(1)*standard_error;  % lower
+            CI_vector(i,j,2) = nanmean(col) + t_score(2)*standard_error;  % upper
         end    
     elseif condition_25 == true
-        % Compute the 25th and 75th percentiles
+        % 75 CI
         for j = 1:size(vector,2)
-        data = vector(:,j);
-        data_no_nan = data(~isnan(data));
-        CI25 = prctile(data_no_nan, 25);
-        CI75 = prctile(data_no_nan, 75);
-        CI_vector(i,j,1) = CI25; %CI(i,jt,1) has lower limit
-        CI_vector(i,j,2) = CI75; %CI(i,j,2) has the upper limi
+           col = vector(:,j);
+            n = sum(~isnan(col));                 
+            standard_error = nanstd(col) / sqrt(n);           
+            t_score = tinv([0.125 0.875], n-1); % 75% CI quantiles
+    
+            CI_vector(1,j,1) = nanmean(col) + t_score(1)*standard_error;   % lower
+            CI_vector(1,j,2) = nanmean(col) + t_score(2)*standard_error;   % upper
         end
     end
 

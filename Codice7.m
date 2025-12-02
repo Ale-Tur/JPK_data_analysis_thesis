@@ -50,22 +50,23 @@ while ~check
         end
         
         %This command is needed to easily obtain Loss
-        Loss_Factor = flip_Loss.';
+        Loss_temp = flip_Loss.';
+        [Loss_temp(:,:), median_Loss(i,:), CI_loss] = GetStatistics(flip_Loss,i,true);
 
-        %Getting the median for loss (separeted for future errors check
-        %maybe?)
-        for j = 1:size(Loss_Factor,2)
-            median_Loss(i,j) = nanmedian(Loss_Factor(:,j));
-            %fprintf('%d \n', j)
-        end  
-        
-        %Getting the confidence interval for G' 
-        for j = 1:size(Loss_Factor,2)
-            n_NaN_loss = numnan(Loss_Factor(:,j));
-            standard_error_loss = nanstd(Loss_Factor(:,j))/sqrt(size(Loss_Factor,2)-n_NaN_loss);
-            t_score_loss = tinv([0.025 0.975], size(Loss_Factor,2)-1-n_NaN_loss);
-            CI_loss(i,j,:) = nanmean(Loss_Factor(:,j)) + t_score_loss*standard_error_loss; %CI(i,j,1) has lower limit, CI(i,j,2) has the upper limit
-        end
+        % %Getting the median for loss (separeted for future errors check
+        % %maybe?)
+        % for j = 1:size(Loss_Factor,2)
+        %     median_Loss(i,j) = nanmedian(Loss_Factor(:,j));
+        %     %fprintf('%d \n', j)
+        % end  
+        % 
+        % %Getting the confidence interval for G' 
+        % for j = 1:size(Loss_Factor,2)
+        %     n_NaN_loss = numnan(Loss_Factor(:,j));
+        %     standard_error_loss = nanstd(Loss_Factor(:,j))/sqrt(size(Loss_Factor,2)-n_NaN_loss);
+        %     t_score_loss = tinv([0.025 0.975], size(Loss_Factor,2)-1-n_NaN_loss);
+        %     CI_loss(i,j,:) = nanmean(Loss_Factor(:,j)) + t_score_loss*standard_error_loss; %CI(i,j,1) has lower limit, CI(i,j,2) has the upper limit
+        % end
 
         %% Plotting Loss Factor
         c = uisetcolor;
@@ -75,12 +76,18 @@ while ~check
             'o','Color',c,'MarkerFaceColor',c);
         xlabel('Frequencies [Hz]')
         ylabel('Loss Factor')
+        xticks([1,49.3,77.7,116.1,154.5,192.9,231.3,269.6,308,346.4,384.8,423.2,461.9,500])
+        xticklabels({'1','39.3','77.7','116.1','154.5','192.9','231.3','269.6','308','346.4','384.4',...
+            '423.2','461.9','500'})
+        % xticks([1, 1.6, 2.5, 4, 6.5, 10, 16, 25, 40, 65, 100, 160, 250, 400])
+        % xticklabels({'1', '1.6', '2.5', '4', '6.5', '10', '16', '25', '40', '65',...
+        %     '100', '160', '250', '400'})
         hold on
 
 
 
     end
-    clear flip_Loss;
+    clear flip_Loss; clear Loss_temp
 end
 
 plot(1:1:max(frequencies_number),ones(1,numel(1:1:max(frequencies_number))),'--','Color',[0 0 0], 'HandleVisibility','off')

@@ -25,7 +25,7 @@ while ~check
 
         flip_YM(:,:) = cell2mat(data_organized(2:size(data_organized,1),8,:));
 
-        [YM_temp(:,:), median_YM(i,:), CI_YM] = GetStatistics(flip_YM,i);
+        [YM_temp(:,:), median_YM(i,:), CI_YM] = GetStatistics(flip_YM,i,true);
 
         color_temp = uisetcolor;
 

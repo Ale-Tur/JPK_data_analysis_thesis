@@ -30,7 +30,7 @@ while ~check
             flip_G(:,:) = cell2mat(data_organized(2:size(data_organized,1),24,:)); %G"
         end
         
-        [G(:,:), median(i,:), CI] = GetStatistics(flip_G,i);
+        [G(:,:), median(i,:), CI] = GetStatistics(flip_G,i,true);
 
         %Plotting the medians and the CI
         c = uisetcolor;
