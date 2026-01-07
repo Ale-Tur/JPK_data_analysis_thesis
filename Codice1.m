@@ -18,6 +18,7 @@ while ~check
     %Getting the filepath through user file selection
     fprintf('you are choosing the %d ° file \n',i)
     [filename, folderpath] = uigetfile('*.tsv');
+    fprintf('%s \n', filename);
 
     if isequal(filename, 0)
 

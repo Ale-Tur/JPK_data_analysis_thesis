@@ -40,16 +40,16 @@ for i=1:size(all_coeff_power1,2)
     all_coeff_power1_mat = all_coeff_power1_mat(~isnan(all_coeff_power1_mat));
     size_power1 = [size(all_coeff_power1{1,i},1)-num_NaN, size(all_coeff_power1{1,i},2)];
     all_coeff_power1_mat = reshape(all_coeff_power1_mat,size_power1);
-    boot_median_power1 = bootstrp(5000, @median, all_coeff_power1_mat);
-    CI_power1(:,1:2,i) = prctile(boot_median_power1, [12.5 87.5]);
+    boot_mean_power1 = bootstrp(5000, @median, all_coeff_power1_mat);
+    CI_power1(:,1:2,i) = prctile(boot_mean_power1, [12.5 87.5]);
 
     all_coeff_power2_mat = cell2mat(all_coeff_power2(1,i));
     num_NaN = sum(isnan(all_coeff_power2_mat(:,1)));
     all_coeff_power2_mat = all_coeff_power2_mat(~isnan(all_coeff_power2_mat));
     size_power2 = [size(all_coeff_power2{1,i},1)-num_NaN, size(all_coeff_power2{1,i},2)];
     all_coeff_power2_mat = reshape(all_coeff_power2_mat,size_power2);
-    boot_median_power2 = bootstrp(5000, @median, all_coeff_power2_mat);
-    CI_power2(:,1:4,i) = prctile(boot_median_power2, [12.5 87.5]);
+    boot_mean_power2 = bootstrp(5000, @median, all_coeff_power2_mat);
+    CI_power2(:,1:4,i) = prctile(boot_mean_power2, [12.5 87.5]);
 end
 
 f1 = @(x,a,b) a*x.^b;
@@ -133,12 +133,7 @@ grid('on')
 % INFERIORE è 186 Hz TIPO
 pFig2 = figure;
 % plot(freq_intersect_median,'o','MarkerEdgeColor',c1,'MarkerFaceColor',c1)
-%MODO GIUSTO DI PLOTTARE L'ERRORE PER COME LO TROVO
-plot(freq_intersect_median,'o','MarkerEdgeColor',c1,'MarkerFaceColor',c1)
-hold on
-plot(freq_error(:,2),'o','Marker','square','MarkerEdgeColor',c1,'MarkerFaceColor',c1)
-hold on
-plot(freq_error(:,1),'o','Marker','diamond','MarkerEdgeColor',c1,'MarkerFaceColor',c1)
+errorbar([1,2,3,4,5,6],freq_intersect_median,freq_error(:,1),freq_error(:,2),'o','MarkerEdgeColor',c1,'MarkerFaceColor',c1)
 title('Frequency at which \eta = 1, found for median values')
 ylabel('Frequncy [Hz]')
 xticklabels({'25nm','50nm','100nm','150nm','200nm','250nm'})

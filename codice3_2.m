@@ -11,6 +11,7 @@ all_coeff = {};
 while ~check
     
     [filename, folderpath] = uigetfile;
+    fprintf("%s \n",filename)
     if isequal(filename, 0)
 
         fprintf('The user selected all the data \n');
@@ -30,7 +31,7 @@ while ~check
             flip_G(:,:) = cell2mat(data_organized(2:size(data_organized,1),24,:)); %G"
         end
         
-        [G(:,:), median(i,:), CI] = GetStatistics(flip_G,i,true);
+        [G(:,:), median(i,:), CI(i,:,:)] = GetStatistics(flip_G,i,true);
 
         %Plotting the medians and the CI
         c = uisetcolor;
@@ -49,17 +50,21 @@ while ~check
                 if anynan(G(jj,:)) == false
                     fit_all_power1 = fit(frequencies_number(:,1),(G(jj,:)).','power1');
                     temp_coeff(jj,:) = coeffvalues(fit_all_power1);
+                    temp_cint(:,:,jj) = confint(fit_all_power1,0.5);
                 else
                     temp_coeff(jj,:) = NaN(1,2);
+                    temp_cint(:,:,jj) = NaN(2,2); 
                 end
             end
             all_coeff{i} = temp_coeff;
-            clear temp_coeff;
+            all_cint{i} = temp_cint;
+            clear temp_coeff; clear temp_cint
 
             %For fit median
             c_1 = uisetcolor;
             fit_power = fit(frequencies_number(:,1),(median(i,:)).','power1');
             coeff_power1(i,:) = coeffvalues(fit_power);
+            cint_power1(:,:,i) = confint(fit_power,0.5);
             y_fit(:,1) = coeff_power1(i,1)*x_fit.^(coeff_power1(i,2));
             f2 = plot(y_fit,'Color',c_1, 'LineWidth',0.7,'HandleVisibility','off');
             % legend_array(2,i) = ExtractNameAmplitude(filename) + 'fit';
@@ -67,24 +72,28 @@ while ~check
         %DA CORREGGERE (dovrebbe essre corretto)
         elseif choice == 2
 
-            fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [50, 1.5, 200, 0.5], 'lower', [0,0,0,0]);
+            fo = fitoptions('Method', 'NonLinearLeastSquares', 'StartPoint', [50, 1.5, 200, 0.5], 'lower', [1,0,1,0]);
             ft = fittype('a*x^b + c*x^d','independent', 'x', 'coefficients', {'a','b','c','d'},'options',fo);
             %For fit all of cells
             for jj=1:size(G,1)
                 if anynan(G(jj,:)) == false
                     fit_all_power2 = fit(frequencies_number(:,1),(G(jj,:)).',ft);                 
                     temp_coeff(jj,:) = coeffvalues(fit_all_power2);
+                    temp_cint(:,:,jj) = confint(fit_all_power2,0.5); %?? check se è giusto
                 else
                     temp_coeff(jj,:) = NaN(1,4);
+                    temp_cint(:,:,jj) = NaN(2,4); %?? check se è giusto
                 end
             end
             all_coeff{i} = temp_coeff;
-            clear temp_coeff;
+            all_cint{i} = temp_cint;
+            clear temp_coeff; clear temp_cint
 
             %For fit median
             c_1 = uisetcolor;
             fit_power2 = fit(frequencies_number(:,1),(median(i,:)).',ft);
             coeff_power2(i,:) = coeffvalues(fit_power2);
+            cint_power2(:,:,i) = confint(fit_power2,0.5);
             y_fit_2(:,1) = coeff_power2(i,1)*x_fit.^(coeff_power2(i,2))...
                 +coeff_power2(i,3)*x_fit.^(coeff_power2(i,4));
             f2 = plot(y_fit_2,'--', 'Color', c_1, 'LineWidth',0.7,'HandleVisibility','off');
@@ -98,9 +107,13 @@ end
 % legend(legend_array);
 
 if choice == 1
-    save("all_coeff_power1","all_coeff")
-    save("all_coeff_median_power1","coeff_power1")
-elseif choihce == 2
-    save("all_coeff_power2","all_coeff")
-    save("all_coeff_median_power2","coeff_power2")
+    save("Output\all_coeff_power1","all_coeff")
+    save("Output\all_cint_power1","all_cint")
+    save("Output\all_coeff_median_power1","coeff_power1")
+    save("Output\all_cint_median_power1","cint_power1")
+elseif choice == 2
+    save("Output\all_coeff_power2","all_coeff")
+    save("Output\all_cint_power2","all_cint")
+    save("Output\all_coeff_median_power2","coeff_power2")
+    save("Output\all_cint_median_power2","cint_power2")
 end

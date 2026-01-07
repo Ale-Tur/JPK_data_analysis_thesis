@@ -66,6 +66,7 @@ elseif ~isempty(condition_log)
     xticklabels({'1', '1.6', '2.5', '4', '6.5', '10', '16', '25', '40', '65',...
         '100', '160', '250', '400'})
 end
+axis square;
 
 pFig2 = figure;
 for j = 1:size(median_prime,1)
@@ -88,4 +89,4 @@ elseif ~isempty(condition_log)
     xticklabels({'1', '1.6', '2.5', '4', '6.5', '10', '16', '25', '40', '65',...
         '100', '160', '250', '400'})
 end
-
+axis square;
