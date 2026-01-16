@@ -35,7 +35,9 @@ while ~check
 
         %Plotting the medians and the CI
         c = uisetcolor;
-        f1 = errorbar(frequencies_number(:,1),median(i,:),CI(i,:,1),CI(i,:,2),[],[],...
+        err_low  = median(i,:) - CI(i,:,1);
+        err_high = CI(i,:,2) - median(i,:);
+        f1 = errorbar(frequencies_number(:,1),median(i,:),err_low,err_high,[],[],...
             'o','Color',c,'MarkerFaceColor',c);
         xlabel('Frequencies [Hz]')
         ylabel('G* [Pa]')

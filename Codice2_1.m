@@ -8,6 +8,7 @@ YM_all = {};
 colors = {};
 dataset_ID = {};
 
+fprintf('Select the cells with all the data \n')
 while ~check
     
     [filename, folderpath] = uigetfile;
@@ -25,7 +26,7 @@ while ~check
 
         flip_YM(:,:) = cell2mat(data_organized(2:size(data_organized,1),8,:));
 
-        [YM_temp(:,:), median_YM(i,:), CI_YM] = GetStatistics(flip_YM,i,true);
+        [YM_temp(:,:), median_YM(i,:), CI_YM(i,:,:)] = GetStatistics(flip_YM,i,true);
 
         color_temp = uisetcolor;
 
@@ -77,7 +78,6 @@ for i = 1:nDatasets
 
     % plot boxchart at shifted positions and without outlier
     h(i) = boxchart(xvec + offset, yvec, 'BoxWidth', boxWidthPerSet*0.95,'BoxMedianLineColor','red');
-    % set face color from your colors cell (assumes [r g b])
     try
         h(i).BoxFaceColor = colors{i};   % modern MATLAB property
         h(i).MarkerColor = colors{i};
